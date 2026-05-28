@@ -1,0 +1,24 @@
+{
+  "name": "finsight-ai",
+  "version": "1.0.0",
+  "private": true,
+  "packageManager": "pnpm@10.0.0",
+  "engines": {
+    "node": ">=22.0.0",
+    "pnpm": ">=10.0.0"
+  },
+  "scripts": {
+    "frontend:dev": "pnpm --filter frontend dev",
+    "frontend:build": "pnpm --filter frontend build",
+    "frontend:test": "pnpm --filter frontend test",
+    "frontend:lint": "pnpm --filter frontend lint",
+    "frontend:typecheck": "pnpm --filter frontend typecheck",
+
+    "backend:dev": "echo Backend scaffold arrives in Phase 1B",
+    "backend:test": "echo Backend scaffold arrives in Phase 1B",
+
+    "format": "pnpm --filter frontend format",
+    "lint": "pnpm --filter frontend lint",
+    "typecheck": "pnpm --filter frontend typecheck"
+  }
+}

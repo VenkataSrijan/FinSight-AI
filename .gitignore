@@ -1,0 +1,63 @@
+# Node
+node_modules/
+.pnpm-store/
+
+# Next
+.next/
+out/
+dist/
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.venv/
+venv/
+env/
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Logs
+*.log
+logs/
+
+# Coverage
+coverage/
+htmlcov/
+.pytest_cache/
+.mypy_cache/
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Docker
+*.pid
+
+# ML
+mlruns/
+*.pkl
+*.joblib
+*.onnx
+
+# Data artifacts
+data/raw/*
+data/processed/*
+data/synthetic/*
+
+# Keep directories
+!data/raw/.gitkeep
+!data/processed/.gitkeep
+!data/synthetic/.gitkeep
+
+# Test artifacts
+playwright-report/
+test-results/
