@@ -14,6 +14,12 @@ from app.services.transaction_service import (
     transaction_service,
 )
 
+from datetime import datetime
+from app.domain.enums import (
+    TransactionStatus,
+    TransactionType,
+)
+
 router = APIRouter(
     prefix="/transactions",
     tags=["Transactions"],
@@ -83,6 +89,14 @@ async def get_transaction(
 async def list_transactions(
     limit: int = 20,
     offset: int = 0,
+    account_id: UUID | None = None,
+    category_id: UUID | None = None,
+    transaction_type: TransactionType | None = None,
+    status: TransactionStatus | None = None,
+    start_date: datetime | None = None,
+    end_date: datetime | None = None,
+    sort_by: str = "transaction_date",
+    sort_order: str = "desc",
     db: AsyncSession = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ) -> list[TransactionResponse]:
@@ -92,9 +106,18 @@ async def list_transactions(
         user_id=current_user.id,
         limit=limit,
         offset=offset,
+        account_id=account_id,
+        category_id=category_id,
+        transaction_type=transaction_type,
+        status=status,
+        start_date=start_date,
+        end_date=end_date,
+        sort_by=sort_by,
+        sort_order=sort_order,
     )
 
     return [
         TransactionResponse.model_validate(tx)
         for tx in transactions
     ]
+

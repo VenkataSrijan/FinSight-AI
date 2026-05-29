@@ -1,6 +1,6 @@
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
-
+from sqlalchemy import asc, desc, select
 from app.core.hashing import generate_transaction_hash
 from app.domain.account import Account
 from app.domain.category import Category
@@ -130,8 +130,7 @@ class TransactionService:
         )
 
         return transaction
-    
-    
+
     async def list_transactions(
         self,
         db: AsyncSession,
@@ -139,24 +138,72 @@ class TransactionService:
         user_id: int,
         limit: int = 20,
         offset: int = 0,
+        account_id=None,
+        category_id=None,
+        transaction_type=None,
+        status=None,
+        start_date=None,
+        end_date=None,
+        sort_by: str = "transaction_date",
+        sort_order: str = "desc",
     ) -> list[Transaction]:
 
-        result = await db.scalars(
-            select(Transaction)
-            .where(
-                Transaction.user_id == user_id,
-            )
-            .order_by(
-                Transaction.transaction_date.desc()
-            )
-            .limit(limit)
-            .offset(offset)
+        query = select(Transaction).where(
+            Transaction.user_id == user_id,
         )
 
+        # Filters
+        if account_id:
+            query = query.where(
+                Transaction.account_id == account_id
+            )
+
+        if category_id:
+            query = query.where(
+                Transaction.category_id == category_id
+            )
+
+        if transaction_type:
+            query = query.where(
+                Transaction.type == transaction_type
+            )
+
+        if status:
+            query = query.where(
+                Transaction.status == status
+            )
+
+        if start_date:
+            query = query.where(
+                Transaction.transaction_date >= start_date
+            )
+
+        if end_date:
+            query = query.where(
+                Transaction.transaction_date <= end_date
+            )
+
+        # Sorting
+        sort_column = getattr(
+            Transaction,
+            sort_by,
+            Transaction.transaction_date,
+        )
+
+        if sort_order == "asc":
+            query = query.order_by(
+                asc(sort_column)
+            )
+        else:
+            query = query.order_by(
+                desc(sort_column)
+            )
+
+        # Pagination
+        query = query.limit(limit).offset(offset)
+
+        result = await db.scalars(query)
+
         return list(result.all())
-
-
-
-
-
+    
 transaction_service = TransactionService()
