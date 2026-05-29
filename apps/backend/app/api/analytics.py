@@ -19,6 +19,22 @@ from app.services.analytics.trends_service import (
     trends_service,
 )
 
+from app.schemas.analytics.cashflow import (
+    CashflowResponse,
+)
+
+from app.services.analytics.cashflow_service import (
+    cashflow_service,
+)
+
+from app.schemas.analytics.merchant import (
+    MerchantAnalyticsResponse,
+)
+
+from app.services.analytics.merchant_service import (
+    merchant_service,
+)
+
 router = APIRouter(
     prefix="/analytics",
     tags=["Analytics"],
@@ -63,6 +79,34 @@ async def get_monthly_trends(
 ) -> MonthlyTrendsResponse:
 
     return await trends_service.get_monthly_trends(
+        db,
+        user_id=current_user.id,
+    )
+
+@router.get(
+    "/cashflow",
+    response_model=CashflowResponse,
+)
+async def get_cashflow(
+    db: AsyncSession = Depends(get_db),
+    current_user=Depends(get_current_user),
+) -> CashflowResponse:
+
+    return await cashflow_service.get_cashflow(
+        db,
+        user_id=current_user.id,
+    )
+
+@router.get(
+    "/merchants",
+    response_model=MerchantAnalyticsResponse,
+)
+async def get_merchants(
+    db: AsyncSession = Depends(get_db),
+    current_user=Depends(get_current_user),
+) -> MerchantAnalyticsResponse:
+
+    return await merchant_service.get_top_merchants(
         db,
         user_id=current_user.id,
     )

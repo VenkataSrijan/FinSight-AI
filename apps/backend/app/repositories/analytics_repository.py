@@ -144,5 +144,42 @@ class AnalyticsRepository:
         )
 
         return result.all()
+    
+    async def get_top_merchants(
+        self,
+        db: AsyncSession,
+        *,
+        user_id: int,
+    ):
+        
+        result = await db.execute(
+            select(
+                Transaction.merchant,
+                func.sum(
+                    Transaction.amount
+                ).label(
+                    "total_amount"
+                ),
+                func.count(
+                    Transaction.id
+                ).label(
+                    "transaction_count"
+                ),
+            )
+            .where(
+                Transaction.user_id == user_id,
+                Transaction.merchant.is_not(None),
+            )
+            .group_by(
+                Transaction.merchant,
+            )
+            .order_by(
+                func.sum(
+                    Transaction.amount
+                ).desc()
+            )
+        )
+
+        return result.all()
 
 analytics_repository = AnalyticsRepository()
