@@ -100,6 +100,49 @@ class AnalyticsRepository:
         )
 
         return result.all()
+    
+    async def get_monthly_totals(
+        self,
+        db: AsyncSession,
+        *,
+        user_id: int,
+    ):
 
+        month_expr = func.date_trunc(
+            "month",
+            Transaction.transaction_date,
+        )
+
+        result = await db.execute(
+            select(
+                month_expr.label("month"),
+                Category.type.label("category_type"),
+                func.sum(Transaction.amount).label(
+                    "total_amount"
+                ),
+            )
+            .join(
+                Category,
+                Transaction.category_id == Category.id,
+            )
+            .where(
+                Transaction.user_id == user_id,
+                Category.type.in_(
+                    [
+                        CategoryType.INCOME,
+                        CategoryType.EXPENSE,
+                    ]
+                ),
+            )
+            .group_by(
+                month_expr,
+                Category.type,
+            )
+            .order_by(
+                month_expr,
+            )
+        )
+
+        return result.all()
 
 analytics_repository = AnalyticsRepository()

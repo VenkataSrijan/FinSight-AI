@@ -12,6 +12,12 @@ from app.schemas.analytics.category import (
 from app.services.analytics.category_service import (
     category_service,
 )
+from app.schemas.analytics.trends import (
+    MonthlyTrendsResponse,
+)
+from app.services.analytics.trends_service import (
+    trends_service,
+)
 
 router = APIRouter(
     prefix="/analytics",
@@ -43,6 +49,20 @@ async def get_categories_breakdown(
 ) -> CategoryAnalyticsResponse:
 
     return await category_service.get_expense_breakdown(
+        db,
+        user_id=current_user.id,
+    )
+
+@router.get(
+    "/trends/monthly",
+    response_model=MonthlyTrendsResponse,
+)
+async def get_monthly_trends(
+    db: AsyncSession = Depends(get_db),
+    current_user=Depends(get_current_user),
+) -> MonthlyTrendsResponse:
+
+    return await trends_service.get_monthly_trends(
         db,
         user_id=current_user.id,
     )
