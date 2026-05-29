@@ -5,6 +5,7 @@ import { AppShell } from "@/components/layout/app-shell";
 import { PageContainer } from "@/components/ui/page-container";
 import { QUERY_KEYS } from "@/lib/constants";
 import { healthService } from "@/services/health.service";
+import { analyticsService } from "@/services/analytics.service";
 
 export default function Home(): React.JSX.Element {
   const { data, error, isLoading } = useQuery({
@@ -61,3 +62,11 @@ export default function Home(): React.JSX.Element {
     </AppShell>
   );
 }
+
+const {
+  data: summary,
+  isLoading: summaryLoading,
+} = useQuery({
+  queryKey: ["analytics", "summary"],
+  queryFn: analyticsService.getSummary,
+});
