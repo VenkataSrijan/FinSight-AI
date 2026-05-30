@@ -5,10 +5,28 @@ import { Moon, Sun, PanelLeft, Wallet } from "lucide-react";
 import { useTheme } from "next-themes";
 import { Button } from "@/components/ui/button";
 import { useUiStore } from "@/store/ui-store";
+import { useRouter } from "next/navigation";
+
+import { useAuthStore } from "@/store/auth-store";
 
 export function Navbar(): React.JSX.Element {
   const { theme, setTheme } = useTheme();
   const toggleSidebar = useUiStore((state) => state.toggleSidebar);
+  const router = useRouter();
+
+  const logout = useAuthStore(
+    (state) => state.logout
+  );
+
+  const user = useAuthStore(
+    (state) => state.user
+  );
+
+  function handleLogout(): void {
+    logout();
+
+    router.push("/login");
+  }
 
   return (
     <header className="sticky top-0 z-50 border-b border-border bg-background/80 backdrop-blur-xl">
@@ -39,17 +57,40 @@ export function Navbar(): React.JSX.Element {
           </div>
         </div>
 
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={() =>
-            setTheme(theme === "dark" ? "light" : "dark")
-          }
-          aria-label="Toggle theme"
-        >
-          <Sun className="h-5 w-5 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-          <Moon className="absolute h-5 w-5 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
-        </Button>
+        <div className="flex items-center gap-4">
+          <div className="text-right">
+            <p className="text-sm font-medium">
+              {user?.full_name ?? "User"}
+            </p>
+
+            <p className="text-xs text-muted-foreground">
+              {user?.email}
+            </p>
+          </div>
+
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() =>
+              setTheme(
+                theme === "dark"
+                  ? "light"
+                  : "dark"
+              )
+            }
+            aria-label="Toggle theme"
+          >
+            <Sun className="h-5 w-5 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
+            <Moon className="absolute h-5 w-5 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+          </Button>
+
+          <Button
+            variant="outline"
+            onClick={handleLogout}
+          >
+            Logout
+          </Button>
+        </div>
       </div>
     </header>
   );

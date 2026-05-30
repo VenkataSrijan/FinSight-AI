@@ -5,6 +5,7 @@ import { ThemeProvider } from "./theme-provider";
 import { QueryProvider } from "./query-provider";
 import { Toaster } from "sonner";
 import { AuthProvider } from "./auth-provider";
+import { AuthGuard } from "@/components/auth/auth-guard";
 
 export function AppProvider({
   children,
@@ -20,7 +21,9 @@ export function AppProvider({
     >
       <QueryProvider>
         <AuthProvider>
-          {children}
+          <AuthGuard>
+            {children}
+          </AuthGuard>
         </AuthProvider>
 
         <Toaster
