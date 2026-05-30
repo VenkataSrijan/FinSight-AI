@@ -181,5 +181,127 @@ class AnalyticsRepository:
         )
 
         return result.all()
+    
+    from sqlalchemy import func, select
+
+# existing imports remain
+
+
+    async def get_expense_activity_window(
+        self,
+        db: AsyncSession,
+        *,
+        user_id: int,
+    ):
+
+        result = await db.execute(
+            select(
+                func.min(
+                    Transaction.transaction_date
+                ).label(
+                    "first_transaction"
+                ),
+                func.max(
+                    Transaction.transaction_date
+                ).label(
+                    "last_transaction"
+                ),
+                func.coalesce(
+                    func.sum(
+                        Transaction.amount
+                    ),
+                    0,
+                ).label(
+                    "total_expenses"
+                ),
+            )
+            .join(
+                Category,
+                Transaction.category_id == Category.id,
+            )
+            .where(
+                Transaction.user_id == user_id,
+                Category.type == CategoryType.EXPENSE,
+            )
+        )
+
+        return result.one()
+    
+    async def get_monthly_expense_totals(
+        self,
+        db: AsyncSession,
+        *,
+        user_id: int,
+    ):
+
+        month_expr = func.date_trunc(
+            "month",
+            Transaction.transaction_date,
+        )
+
+        result = await db.execute(
+            select(
+                month_expr.label("month"),
+                func.sum(
+                    Transaction.amount
+                ).label(
+                    "total_expenses"
+                ),
+            )
+            .join(
+                Category,
+                Transaction.category_id == Category.id,
+            )
+            .where(
+                Transaction.user_id == user_id,
+                Category.type == CategoryType.EXPENSE,
+            )
+            .group_by(
+                month_expr,
+            )
+            .order_by(
+                month_expr.desc(),
+            )
+            .limit(2)
+        )
+
+        return result.all()
+    
+    async def get_top_expense_merchants(
+        self,
+        db: AsyncSession,
+        *,
+        user_id: int,
+    ):
+
+        result = await db.execute(
+            select(
+                Transaction.merchant,
+                func.sum(
+                    Transaction.amount
+                ).label(
+                    "total_amount"
+                ),
+            )
+            .join(
+                Category,
+                Transaction.category_id == Category.id,
+            )
+            .where(
+                Transaction.user_id == user_id,
+                Category.type == CategoryType.EXPENSE,
+                Transaction.merchant.is_not(None),
+            )
+            .group_by(
+                Transaction.merchant,
+            )
+            .order_by(
+                func.sum(
+                    Transaction.amount
+                ).desc()
+            )
+        )
+
+        return result.all()
 
 analytics_repository = AnalyticsRepository()

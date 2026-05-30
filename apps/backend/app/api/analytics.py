@@ -35,6 +35,39 @@ from app.services.analytics.merchant_service import (
     merchant_service,
 )
 
+from app.schemas.analytics.savings import (
+    SavingsRateResponse,
+)
+
+from app.services.analytics.savings_service import (
+    savings_service,
+)
+
+from app.schemas.analytics.burn_rate import (
+    BurnRateResponse,
+)
+
+from app.services.analytics.burn_rate_service import (
+    burn_rate_service,
+)
+
+
+from app.schemas.analytics.velocity import (
+    VelocityResponse,
+)
+
+from app.services.analytics.velocity_service import (
+    velocity_service,
+)
+
+from app.schemas.analytics.insight import (
+    InsightsResponse,
+)
+
+from app.services.analytics.insight_service import (
+    insight_service,
+)
+
 router = APIRouter(
     prefix="/analytics",
     tags=["Analytics"],
@@ -109,4 +142,61 @@ async def get_merchants(
     return await merchant_service.get_top_merchants(
         db,
         user_id=current_user.id,
+    )
+
+@router.get(
+    "/savings-rate",
+    response_model=SavingsRateResponse,
+)
+async def get_savings_rate(
+    db: AsyncSession = Depends(get_db),
+    current_user=Depends(get_current_user),
+) -> SavingsRateResponse:
+
+    return await savings_service.get_savings_rate(
+        db,
+        user_id=current_user.id,
+    )
+
+@router.get(
+    "/burn-rate",
+    response_model=BurnRateResponse,
+)
+async def get_burn_rate(
+    db: AsyncSession = Depends(get_db),
+    current_user=Depends(get_current_user),
+) -> BurnRateResponse:
+
+    return await burn_rate_service.get_burn_rate(
+        db,
+        user_id=current_user.id,
+    )
+
+@router.get(
+    "/velocity",
+    response_model=VelocityResponse,
+)
+async def get_velocity(
+    db: AsyncSession = Depends(get_db),
+    current_user=Depends(get_current_user),
+) -> VelocityResponse:
+
+    return await velocity_service.get_velocity(
+        db,
+        user_id=current_user.id,
+    )
+
+@router.get(
+    "/insights",
+    response_model=InsightsResponse,
+)
+async def get_insights(
+    db: AsyncSession = Depends(get_db),
+    current_user=Depends(get_current_user),
+) -> InsightsResponse:
+
+    return await insight_service.get_insights(
+        db,
+        user_id=current_user.id,
+        
     )

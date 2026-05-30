@@ -6,6 +6,10 @@ import type {
   MonthlyTrendsResponse,
   CashflowResponse,
   MerchantAnalyticsResponse,
+  SavingsRate,
+  BurnRate,
+  Velocity,
+  InsightsResponse,
 } from "@/types/analytics";
 
 export const analyticsService = {
@@ -48,6 +52,42 @@ export const analyticsService = {
   getMerchants(): Promise<MerchantAnalyticsResponse> {
     return apiClient.get<MerchantAnalyticsResponse>(
       "/analytics/merchants",
+      {
+        requireAuth: true,
+      }
+    );
+  },
+
+  getSavingsRate(): Promise<SavingsRate> {
+    return apiClient.get<SavingsRate>(
+      "/analytics/savings-rate",
+      {
+        requireAuth: true,
+      }
+    );
+  },
+
+  getBurnRate(): Promise<BurnRate> {
+    return apiClient.get<BurnRate>(
+      "/analytics/burn-rate",
+      {
+        requireAuth: true,
+      }
+    );
+  },
+
+  getVelocity(): Promise<Velocity> {
+    return apiClient.get<Velocity>(
+      "/analytics/velocity",
+      {
+        requireAuth: true,
+      }
+    );
+  },
+
+  getInsights(): Promise<InsightsResponse> {
+    return apiClient.get<InsightsResponse>(
+      "/analytics/insights",
       {
         requireAuth: true,
       }

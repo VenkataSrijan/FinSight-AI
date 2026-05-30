@@ -25,15 +25,17 @@ export interface CreateAccountRequest {
 
   institution_name?: string;
 
-  account_type:
-    | "checking"
-    | "savings"
-    | "credit"
-    | "cash"
-    | "investment"
-    | "crypto";
+  account_type: AccountType;
 
   currency: string;
 
   balance: number;
 }
+
+export type AccountType =
+  | "checking"
+  | "savings"
+  | "credit"
+  | "cash"
+  | "investment"
+  | "crypto";

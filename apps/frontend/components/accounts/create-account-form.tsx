@@ -12,6 +12,9 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
 import { accountService } from "@/services/account.service";
+import type {
+  AccountType,
+} from "@/types/accounts"
 
 export function CreateAccountForm(): React.JSX.Element {
   const queryClient = useQueryClient();
@@ -25,7 +28,7 @@ export function CreateAccountForm(): React.JSX.Element {
   ] = useState("");
 
   const [accountType, setAccountType] =
-    useState("checking");
+    useState<AccountType>("checking");
 
   const [balance, setBalance] =
     useState("");
@@ -55,8 +58,7 @@ export function CreateAccountForm(): React.JSX.Element {
       name,
       institution_name:
         institutionName,
-      account_type:
-        accountType as any,
+      account_type:accountType,
       currency: "USD",
       balance:
         Number(balance),
@@ -100,37 +102,37 @@ export function CreateAccountForm(): React.JSX.Element {
         <Label>Type</Label>
 
         <select
-          value={accountType}
-          onChange={(e) =>
-            setAccountType(
-              e.target.value
-            )
-          }
-          className="w-full rounded-md border border-border px-3 py-2"
-        >
-          <option value="checking">
-            Checking
-          </option>
+            value={accountType}
+            onChange={(e) =>
+                setAccountType(
+                e.target.value as AccountType
+                )
+            }
+            className="w-full rounded-md border border-border px-3 py-2"
+            >
+            <option value="checking">
+                Checking
+            </option>
 
-          <option value="savings">
-            Savings
-          </option>
+            <option value="savings">
+                Savings
+            </option>
 
-          <option value="credit">
-            Credit
-          </option>
+            <option value="credit">
+                Credit
+            </option>
 
-          <option value="cash">
-            Cash
-          </option>
+            <option value="cash">
+                Cash
+            </option>
 
-          <option value="investment">
-            Investment
-          </option>
+            <option value="investment">
+                Investment
+            </option>
 
-          <option value="crypto">
-            Crypto
-          </option>
+            <option value="crypto">
+                Crypto
+            </option>
         </select>
       </div>
 
