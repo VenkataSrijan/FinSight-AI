@@ -303,5 +303,131 @@ class AnalyticsRepository:
         )
 
         return result.all()
+    
+    async def get_recurring_merchants(
+        self,
+        db: AsyncSession,
+        *,
+        user_id: int,
+    ):
+        result = await db.execute(
+            select(
+                Transaction.merchant,
+                func.count(
+                    Transaction.id
+                ).label(
+                    "transaction_count"
+                ),
+                func.avg(
+                    Transaction.amount
+                ).label(
+                    "average_amount"
+                ),
+            )
+            .where(
+                Transaction.user_id == user_id,
+                Transaction.merchant.is_not(None),
+            )
+            .group_by(
+                Transaction.merchant,
+            )
+            .having(
+                func.count(
+                    Transaction.id
+                ) >= 2
+            )
+            .order_by(
+                func.count(
+                    Transaction.id
+                ).desc()
+            )
+        )
+        return result.all()
+    
+    async def get_monthly_category_breakdown(
+        self,
+        db: AsyncSession,
+        *,
+        user_id: int,
+    ):
 
+        month_expr = func.date_trunc(
+            "month",
+            Transaction.transaction_date,
+        )
+
+        result = await db.execute(
+            select(
+                month_expr.label("month"),
+                Category.name.label("category_name"),
+                func.sum(
+                    Transaction.amount
+                ).label(
+                    "total_amount"
+                ),
+            )
+            .join(
+                Category,
+                Transaction.category_id == Category.id,
+            )
+            .where(
+                Transaction.user_id == user_id,
+                Category.type == CategoryType.EXPENSE,
+            )
+            .group_by(
+                month_expr,
+                Category.name,
+            )
+            .order_by(
+                month_expr.desc(),
+            )
+        )
+
+        return result.all()
+
+    async def get_spending_heatmap(
+        self,
+        db: AsyncSession,
+        *,
+        user_id: int,
+    ):
+
+        day_expr = func.extract(
+            "dow",
+            Transaction.transaction_date,
+        )
+
+        result = await db.execute(
+            select(
+                day_expr.label(
+                    "day_of_week"
+                ),
+                func.count(
+                    Transaction.id
+                ).label(
+                    "transaction_count"
+                ),
+                func.sum(
+                    Transaction.amount
+                ).label(
+                    "total_amount"
+                ),
+            )
+            .join(
+                Category,
+                Transaction.category_id == Category.id,
+            )
+            .where(
+                Transaction.user_id == user_id,
+                Category.type == CategoryType.EXPENSE,
+            )
+            .group_by(
+                day_expr,
+            )
+            .order_by(
+                day_expr,
+            )
+        )
+
+        return result.all()
 analytics_repository = AnalyticsRepository()

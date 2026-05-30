@@ -66,10 +66,6 @@ class VelocityService:
             * Decimal("30")
         )
 
-        print(row.first_transaction)
-        print(row.last_transaction)
-        print(days_active)  
-
         return VelocityResponse(
             daily_average=daily_average.quantize(
                 Decimal("0.01")

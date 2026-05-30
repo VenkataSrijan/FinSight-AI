@@ -12,9 +12,10 @@ class InsightSeverity(str, Enum):
 class InsightType(str, Enum):
     SPENDING_SPIKE = "spending_spike"
     SAVINGS_HEALTH = "savings_health"
-    MERCHANT_CONCENTRATION = (
-    "merchant_concentration"
-)
+    MERCHANT_CONCENTRATION = "merchant_concentration"
+    SUBSCRIPTION_DETECTED = "subscription_detected"
+    CATEGORY_DRIFT = "category_drift"
+
 
 
 class InsightItem(BaseModel):
@@ -26,4 +27,6 @@ class InsightItem(BaseModel):
 
 class InsightsResponse(BaseModel):
     insights: list[InsightItem]
+
+
 

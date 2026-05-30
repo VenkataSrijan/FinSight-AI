@@ -1,5 +1,5 @@
 from decimal import Decimal
-
+from collections import defaultdict
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.repositories.analytics_repository import (
@@ -31,8 +31,6 @@ class InsightService:
                 user_id=user_id,
             )
         )
-
-        print(monthly_expenses)
 
         if len(monthly_expenses) >= 2:
 
@@ -151,6 +149,99 @@ class InsightService:
                         ),
                     )
                 )
+
+        recurring_merchants = (
+            await analytics_repository.get_recurring_merchants(
+                db,
+                user_id=user_id,
+            )
+        )
+
+        for merchant in recurring_merchants:
+
+            insights.append(
+                InsightItem(
+                    type=InsightType.SUBSCRIPTION_DETECTED,
+                    severity=InsightSeverity.INFO,
+                    title="Recurring Subscription",
+                    description=(
+                        f"{merchant.merchant} appears "
+                        f"to be a recurring charge."
+                    ),
+                )
+            )
+
+        monthly_categories = (
+            await analytics_repository.get_monthly_category_breakdown(
+                db,
+                user_id=user_id,
+            )
+        )
+
+        monthly_data = defaultdict(dict)
+
+        for row in monthly_categories:
+
+            monthly_data[row.month][
+                row.category_name
+            ] = Decimal(
+                row.total_amount
+            )
+        months = sorted(
+            monthly_data.keys(),
+            reverse=True,
+        )
+
+        if len(months) >= 2:
+
+            current_month = months[0]
+            previous_month = months[1]
+
+            current_categories = (
+                monthly_data[current_month]
+            )
+
+            previous_categories = (
+                monthly_data[previous_month]
+            )
+
+            for category_name, current_amount in (
+                current_categories.items()
+            ):
+
+                previous_amount = (
+                    previous_categories.get(
+                        category_name,
+                        Decimal("0"),
+                    )
+                )
+
+                if previous_amount <= 0:
+                    continue
+
+                increase_percent = (
+                    (
+                        current_amount
+                        - previous_amount
+                    )
+                    / previous_amount
+                ) * Decimal("100")
+
+                if increase_percent >= Decimal("30"):
+
+                    insights.append(
+                        InsightItem(
+                            type=InsightType.CATEGORY_DRIFT,
+                            severity=InsightSeverity.WARNING,
+                            title="Category Spending Increased",
+                            description=(
+                                f"{category_name} spending "
+                                f"increased by "
+                                f"{increase_percent.quantize(Decimal('0.01'))}% "
+                                f"compared to last month."
+                            ),
+                        )
+                    )
         return InsightsResponse(
             insights=insights
         )

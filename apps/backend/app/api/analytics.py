@@ -5,6 +5,7 @@ from app.dependencies.auth import get_current_user
 from app.dependencies.db import get_db
 from app.schemas.analytics.summary import AnalyticsSummaryResponse
 from app.services.analytics.summary_service import summary_service
+from app.domain.user import User
 
 from app.schemas.analytics.category import (
     CategoryAnalyticsResponse,
@@ -66,6 +67,14 @@ from app.schemas.analytics.insight import (
 
 from app.services.analytics.insight_service import (
     insight_service,
+)
+
+from app.schemas.analytics.heatmap import (
+    HeatmapResponse,
+)
+
+from app.services.analytics.heatmap_service import (
+    heatmap_service,
 )
 
 router = APIRouter(
@@ -199,4 +208,21 @@ async def get_insights(
         db,
         user_id=current_user.id,
         
+    )
+
+@router.get(
+    "/heatmap",
+    response_model=HeatmapResponse,
+)
+async def get_heatmap(
+    db: AsyncSession = Depends(
+        get_db,
+    ),
+    current_user: User = Depends(
+        get_current_user,
+    ),
+):
+    return await heatmap_service.get_heatmap(
+        db,
+        user_id=current_user.id,
     )
