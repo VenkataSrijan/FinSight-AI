@@ -1,6 +1,10 @@
 "use client";
 
+import { useQuery } from "@tanstack/react-query";
+
 import { Button } from "@/components/ui/button";
+
+import { accountService } from "@/services/account.service";
 
 interface TransactionFiltersProps {
   accountId: string;
@@ -21,6 +25,14 @@ export function TransactionFilters({
   onAccountChange,
   onTypeChange,
 }: TransactionFiltersProps): React.JSX.Element {
+  const {
+    data: accounts,
+  } = useQuery({
+    queryKey: ["accounts"],
+    queryFn:
+      accountService.getAccounts,
+  });
+
   return (
     <div className="rounded-2xl border border-border bg-card p-6">
       <h2 className="mb-4 text-lg font-semibold">
@@ -41,9 +53,14 @@ export function TransactionFilters({
             All Accounts
           </option>
 
-          <option value="06420f63-6a78-4a87-8ad5-3700cc02fbdc">
-            Primary Checking
-          </option>
+          {accounts?.map((account) => (
+            <option
+              key={account.id}
+              value={account.id}
+            >
+              {account.name}
+            </option>
+          ))}
         </select>
 
         <select

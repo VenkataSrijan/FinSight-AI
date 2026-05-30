@@ -11,6 +11,10 @@ import {
   AccountTable,
 } from "@/components/accounts/account-table";
 
+import {
+  CreateAccountForm,
+} from "@/components/accounts/create-account-form";
+
 export default function AccountsPage(): React.JSX.Element {
   const {
     data: accounts,
@@ -28,6 +32,8 @@ export default function AccountsPage(): React.JSX.Element {
           <h1 className="text-3xl font-bold">
             Accounts
           </h1>
+
+          <CreateAccountForm />
 
           {isLoading ? (
             <p>Loading...</p>

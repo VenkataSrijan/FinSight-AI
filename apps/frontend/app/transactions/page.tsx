@@ -64,9 +64,7 @@ export default function TransactionsPage(): React.JSX.Element {
                 onTypeChange={setTransactionType}
           />
 
-          <CreateTransactionForm
-                accountId="06420f63-6a78-4a87-8ad5-3700cc02fbdc"
-           />
+          <CreateTransactionForm />
 
           {isLoading ? (
             <p>Loading...</p>

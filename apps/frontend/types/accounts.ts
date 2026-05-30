@@ -19,3 +19,21 @@ export interface Account {
 
   updated_at: string;
 }
+
+export interface CreateAccountRequest {
+  name: string;
+
+  institution_name?: string;
+
+  account_type:
+    | "checking"
+    | "savings"
+    | "credit"
+    | "cash"
+    | "investment"
+    | "crypto";
+
+  currency: string;
+
+  balance: number;
+}
