@@ -12,6 +12,10 @@ import type {
   InsightsResponse,
 } from "@/types/analytics";
 
+import type {
+  HeatmapResponse,
+} from "@/types/analytics";
+
 export const analyticsService = {
   getSummary(): Promise<AnalyticsSummary> {
     return apiClient.get<AnalyticsSummary>(
@@ -93,4 +97,13 @@ export const analyticsService = {
       }
     );
   },
+
+  getHeatmap(): Promise<HeatmapResponse> {
+    return apiClient.get<HeatmapResponse>(
+      "/analytics/heatmap",
+      {
+        requireAuth: true,
+      }
+    );
+  }
 };

@@ -16,10 +16,6 @@ import {
 } from "@/components/analytics/cashflow-card";
 
 import {
-  MerchantInsights,
-} from "@/components/analytics/merchant-insights";
-
-import {
   IntelligenceCards,
 } from "@/components/analytics/intelligence-cards";
 
@@ -34,6 +30,14 @@ import {
 import {
   CategoryChart,
 } from "@/components/analytics/category-chart";
+
+import {
+  MerchantChart,
+} from "@/components/analytics/merchant-chart";
+
+import {
+  SpendingHeatmap,
+} from "@/components/analytics/spending-heatmap";
 
 
 export default function AnalyticsPage(): React.JSX.Element {
@@ -82,6 +86,11 @@ export default function AnalyticsPage(): React.JSX.Element {
     queryFn: analyticsService.getInsights,
     });
 
+    const heatmapQuery = useQuery({
+      queryKey: ["analytics", "heatmap"],
+      queryFn: analyticsService.getHeatmap,
+    });
+
   return (
     <AppShell>
       <PageContainer>
@@ -123,9 +132,16 @@ export default function AnalyticsPage(): React.JSX.Element {
             />
           </div>
 
-          <MerchantInsights
+          <MerchantChart
             data={merchantsQuery.data}
             isLoading={merchantsQuery.isLoading}
+          />
+
+          <SpendingHeatmap
+            data={heatmapQuery.data}
+            isLoading={
+              heatmapQuery.isLoading
+            }
           />
 
           <InsightsPanel

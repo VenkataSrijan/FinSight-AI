@@ -39,7 +39,6 @@ export default function Home(): React.JSX.Element {
   const {
     data: summary,
     isLoading: summaryLoading,
-    error: _summaryError,
   } = useQuery({
     queryKey: ["analytics", "summary"],
     queryFn: analyticsService.getSummary,

@@ -23,6 +23,20 @@ export function MonthlyTrends({
     );
   }
 
+  if (!data?.months.length) {
+    return (
+      <div className="rounded-2xl border border-border bg-card p-6">
+        <h2 className="text-xl font-semibold">
+          Monthly Trends
+        </h2>
+
+        <p className="mt-4 text-muted-foreground">
+          No trend data available.
+        </p>
+      </div>
+    );
+  }
+
   const months =
     data?.months.map((item) => item.month) ?? [];
 

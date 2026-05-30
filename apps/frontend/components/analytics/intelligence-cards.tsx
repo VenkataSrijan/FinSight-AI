@@ -25,18 +25,29 @@ export function IntelligenceCards({
       value: savings
         ? `${savings.savings_rate}%`
         : "0%",
+      subtitle: "Excellent" ,
+      accent:
+        "border-green-500/30 bg-green-500/5",
     },
+
     {
       title: "Burn Rate",
       value: burnRate
         ? `$${burnRate.burn_rate}`
         : "$0",
+      subtitle: "Monthly Spend",
+      accent:
+        "border-amber-500/30 bg-amber-500/5",
     },
+
     {
       title: "Daily Velocity",
       value: velocity
         ? `$${velocity.daily_average}`
         : "$0",
+      subtitle: "Per Day",
+      accent:
+        "border-blue-500/30 bg-blue-500/5",
     },
   ];
 
@@ -45,13 +56,16 @@ export function IntelligenceCards({
       {cards.map((card) => (
         <div
           key={card.title}
-          className="rounded-2xl border border-border bg-card p-6 shadow-sm"
+          className={`rounded-2xl border p-6 shadow-sm ${card.accent}`}
         >
           <p className="text-sm text-muted-foreground">
             {card.title}
           </p>
 
           <h3 className="mt-2 text-3xl font-bold">
+            <p className="mt-2 text-sm text-muted-foreground">
+              {card.subtitle}
+            </p>
             {isLoading
               ? "..."
               : card.value}

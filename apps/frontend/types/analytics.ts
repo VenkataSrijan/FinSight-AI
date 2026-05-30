@@ -81,3 +81,13 @@ export interface Insight {
 export interface InsightsResponse {
   insights: Insight[];
 }
+
+export interface HeatmapItem {
+  day_of_week: string;
+  transaction_count: number;
+  total_amount: string;
+}
+
+export interface HeatmapResponse {
+  items: HeatmapItem[];
+}

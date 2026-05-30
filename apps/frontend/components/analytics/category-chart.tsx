@@ -23,6 +23,20 @@ export function CategoryChart({
     );
   }
 
+  if (!data?.categories.length) {
+    return (
+      <div className="rounded-2xl border border-border bg-card p-6">
+        <h2 className="text-xl font-semibold">
+          Category Breakdown
+        </h2>
+
+        <p className="mt-4 text-muted-foreground">
+          No category data available.
+        </p>
+      </div>
+    );
+  }
+
   const chartData =
     data?.categories.map((category) => ({
       name: category.category_name,
