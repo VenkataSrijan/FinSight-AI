@@ -2,6 +2,7 @@ import { APP_CONFIG } from "@/lib/constants";
 import { normalizeApiError } from "./errors";
 import type { RequestConfig } from "./types";
 import { useAuthStore } from "@/store/auth-store";
+import { authService } from "@/services/auth.service";
 
 async function getAccessToken(): Promise<string | null> {
   return useAuthStore.getState().accessToken;
@@ -31,6 +32,60 @@ class ApiClient {
       headers,
       cache: "no-store",
     });
+
+    if (response.status === 401 && config.requireAuth) {
+      try {
+        const {
+          refreshToken,
+          setTokens,
+          logout,
+        } = useAuthStore.getState();
+
+        if (!refreshToken) {
+          logout();
+          throw await normalizeApiError(response);
+        }
+
+        const tokens =
+          await authService.refresh(
+            refreshToken
+          );
+
+        setTokens(
+          tokens.access_token,
+          tokens.refresh_token
+        );
+
+        headers.set(
+          "Authorization",
+          `Bearer ${tokens.access_token}`
+        );
+
+        const retryResponse = await fetch(
+          `${this.baseUrl}${endpoint}`,
+          {
+            ...config,
+            headers,
+            cache: "no-store",
+          }
+        );
+
+        if (!retryResponse.ok) {
+          logout();
+          throw await normalizeApiError(
+            retryResponse
+          );
+        }
+
+        return retryResponse.json() as Promise<T>;
+      } catch {
+        useAuthStore.getState().logout();
+
+        throw await normalizeApiError(
+          response
+        );
+      }
+    }
 
     if (!response.ok) {
       throw await normalizeApiError(response);

@@ -10,15 +10,44 @@ import {
   TransactionTable,
 } from "@/components/transactions/transaction-table";
 
+import {
+  CreateTransactionForm,
+} from "@/components/transactions/create-transaction-form";
+
+import { useState } from "react";
+
+import {
+  TransactionFilters,
+} from "@/components/transactions/transaction-filters";
+
+
 export default function TransactionsPage(): React.JSX.Element {
+
+  const [accountId, setAccountId] =
+    useState("");
+
+  const [transactionType, setTransactionType] =
+    useState("");
+
   const {
-    data: transactions,
-    isLoading,
-  } = useQuery({
-    queryKey: ["transactions"],
-    queryFn:
-      transactionService.getTransactions,
-  });
+        data: transactions,
+        isLoading,
+    } = useQuery({
+    queryKey: [
+        "transactions",
+        accountId,
+        transactionType,
+    ],
+
+    queryFn: () =>
+        transactionService.getTransactions({
+        account_id:
+            accountId || undefined,
+
+        transaction_type:
+            transactionType || undefined,
+        }),
+    });
 
   return (
     <AppShell>
@@ -27,6 +56,17 @@ export default function TransactionsPage(): React.JSX.Element {
           <h1 className="text-3xl font-bold">
             Transactions
           </h1>
+
+          <TransactionFilters
+                accountId={accountId}
+                transactionType={transactionType}
+                onAccountChange={setAccountId}
+                onTypeChange={setTransactionType}
+          />
+
+          <CreateTransactionForm
+                accountId="06420f63-6a78-4a87-8ad5-3700cc02fbdc"
+           />
 
           {isLoading ? (
             <p>Loading...</p>

@@ -4,6 +4,10 @@ import * as React from "react";
 import { Navbar } from "./navbar";
 import { useUiStore } from "@/store/ui-store";
 import { cn } from "@/lib/utils";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+
+import { navigation } from "@/lib/navigation";
 
 interface AppShellProps {
   children: React.ReactNode;
@@ -13,6 +17,7 @@ export function AppShell({
   children,
 }: AppShellProps): React.JSX.Element {
   const sidebarOpen = useUiStore((state) => state.sidebarOpen);
+  const pathname = usePathname();
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -29,6 +34,23 @@ export function AppShell({
             <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">
               Navigation
             </p>
+
+            <nav className="mt-6 space-y-2">
+              {navigation.map((item) => (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className={cn(
+                    "block rounded-lg px-3 py-2 text-sm transition-colors",
+                    pathname === item.href
+                      ? "bg-primary text-primary-foreground"
+                      : "text-muted-foreground hover:bg-accent hover:text-accent-foreground"
+                  )}
+                >
+                  {item.title}
+                </Link>
+              ))}
+            </nav>
           </div>
         </aside>
 

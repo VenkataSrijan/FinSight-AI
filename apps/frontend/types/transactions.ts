@@ -35,3 +35,27 @@ export interface Transaction {
 
   updated_at: string;
 }
+
+export interface CreateTransactionRequest {
+  account_id: string;
+
+  category_id?: string;
+
+  amount: number;
+
+  currency: string;
+
+  merchant?: string;
+
+  description?: string;
+
+  transaction_date: string;
+
+  type: "debit" | "credit";
+}
+
+export interface TransactionFilters {
+  account_id?: string;
+
+  transaction_type?: string;
+}
