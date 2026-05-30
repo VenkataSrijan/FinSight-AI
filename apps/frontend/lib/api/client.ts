@@ -1,9 +1,10 @@
 import { APP_CONFIG } from "@/lib/constants";
 import { normalizeApiError } from "./errors";
 import type { RequestConfig } from "./types";
+import { useAuthStore } from "@/store/auth-store";
 
 async function getAccessToken(): Promise<string | null> {
-  return null;
+  return useAuthStore.getState().accessToken;
 }
 
 class ApiClient {

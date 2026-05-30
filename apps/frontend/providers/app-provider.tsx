@@ -4,6 +4,7 @@ import * as React from "react";
 import { ThemeProvider } from "./theme-provider";
 import { QueryProvider } from "./query-provider";
 import { Toaster } from "sonner";
+import { AuthProvider } from "./auth-provider";
 
 export function AppProvider({
   children,
@@ -18,8 +19,14 @@ export function AppProvider({
       disableTransitionOnChange
     >
       <QueryProvider>
-        {children}
-        <Toaster richColors position="top-right" />
+        <AuthProvider>
+          {children}
+        </AuthProvider>
+
+        <Toaster
+          richColors
+          position="top-right"
+        />
       </QueryProvider>
     </ThemeProvider>
   );
