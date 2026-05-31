@@ -1,0 +1,6 @@
+text,amount,amount_abs,day_of_week,month,is_weekend,label
+Salary Monthly salary,50000.0,50000.0,4,5,0,feb555f7-b9ac-4b9e-b09d-59cfc4e4ac98
+Restaurant Food expense,15000.0,15000.0,4,5,0,90f19760-9975-4c8e-950a-7543304af7b8
+McDonald's,200.0,200.0,5,5,1,90f19760-9975-4c8e-950a-7543304af7b8
+Netflix,499.0,499.0,5,5,1,feb555f7-b9ac-4b9e-b09d-59cfc4e4ac98
+Netflix,499.0,499.0,5,5,1,feb555f7-b9ac-4b9e-b09d-59cfc4e4ac98
