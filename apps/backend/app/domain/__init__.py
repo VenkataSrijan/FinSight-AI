@@ -7,6 +7,9 @@ from app.domain.transaction import Transaction
 from app.domain.ml_model import MLModel
 from app.domain.ml_prediction import MLPrediction
 from app.domain.ml_feedback import MLFeedback
+from app.domain.forecast_model import ForecastModel
+from app.domain.forecast_run import ForecastRun
+from app.domain.forecast_prediction import ForecastPrediction
 
 __all__ = [
     "Permission",
@@ -15,4 +18,10 @@ __all__ = [
     "Account",
     "Category",
     "Transaction",
+    "MLModel",
+    "MLPrediction",
+    "MLFeedback",
+    "ForecastModel",
+    "ForecastRun",
+    "ForecastPrediction"
 ]

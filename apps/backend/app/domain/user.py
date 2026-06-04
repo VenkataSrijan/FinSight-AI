@@ -76,3 +76,8 @@ class User(Base, TimestampMixin):
     back_populates="user",
     cascade="all, delete-orphan",
     )   
+
+    forecast_runs = relationship(
+        "ForecastRun",
+        back_populates="user",
+    )

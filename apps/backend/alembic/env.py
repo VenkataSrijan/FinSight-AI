@@ -8,7 +8,7 @@ from alembic import context
 
 from app.core.config import get_settings
 from app.domain.base import Base
-import app.domain  # noqa
+from app import domain
 
 config = context.config
 settings = get_settings()
